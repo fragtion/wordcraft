@@ -65,8 +65,11 @@ try {
     # Regression gate for known loader failures; actual Win7 runtime QA remains necessary.
     # combase.dll and api-ms-win-core-winrt-* are the Windows Runtime (Windows 8+), dcomp.dll is
     # DirectComposition (Windows 8+) and d3d12.dll is Direct3D 12 (Windows 10).
-    if ($Imports -match '(?i)\b(GetSystemTimePreciseAsFileTime|ProcessPrng|WaitOnAddress|WakeByAddressSingle|WakeByAddressAll)\b|combase\.dll|bcryptprimitives\.dll|d3d12\.dll|dcomp\.dll|api-ms-win-core-path-|api-ms-win-core-winrt-') {
-      throw "$Name directly imports a known post-Windows-7 API"
+    # The DLLs are listed every time, so a run records what the build imports.
+    Write-Output "$Name imports:" ($Imports | Where-Object { $_ -match '^\s+\S+\.dll\s*$' } | ForEach-Object { '  ' + $_.Trim() })
+    $Bad = @($Imports | Where-Object { $_ -match '(?i)\b(GetSystemTimePreciseAsFileTime|ProcessPrng|WaitOnAddress|WakeByAddressSingle|WakeByAddressAll)\b|combase\.dll|bcryptprimitives\.dll|d3d12\.dll|dcomp\.dll|api-ms-win-core-path-|api-ms-win-core-winrt-' })
+    if ($Bad.Count -gt 0) {
+      throw "$Name directly imports a known post-Windows-7 API: $(($Bad | ForEach-Object { $_.Trim() }) -join ', ')"
     }
   }
   Invoke-Checked { & (Join-Path $Bin 'wordcraft-cli.exe') --version }
