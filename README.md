@@ -232,6 +232,8 @@ just-me installer needs none: it installs into `%LOCALAPPDATA%\Programs\WordCraf
 account only. Choose one: installing both gives two WordCraft entries in Settings › Apps and two
 in the Start menu. Installers and executables are code-signed.
 
+For the experimental, unsupported 64-bit Windows 7 build, see [Windows 7 instructions](docs/windows7.md).
+
 **If the app doesn't open on Windows:** the desktop app initializes only DirectX 12 by default.
 Letting wgpu also create an OpenGL instance can crash some graphics drivers (AMD's
 `atio6axx.dll`) before the window appears, so the app would flash in Task Manager and quit.
